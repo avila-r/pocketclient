@@ -21,30 +21,26 @@ type (
 )
 
 var (
-	Client *PocketClient
-)
-
-func New(config Config) *PocketClient {
-	c := &PocketClient{
+	Client = &PocketClient{
 		Resty: resty.New(),
 		PocketBase: &PocketBase{
 			URL: "http://127.0.0.1:8090",
 		},
 	}
+)
 
+func New(config Config) *PocketClient {
 	if config.URL != "" {
-		c.PocketBase.URL = config.URL
+		Client.PocketBase.URL = config.URL
 	}
 
-	Client = c
-
-	auth, err := Admin.auth(config.Email, config.Password)
+	auth, err := Admin.Auth(config.Email, config.Password)
 
 	if err != nil {
-		log.Fatalf("failed to authenticate first admin - %v", err.Error())
+		log.Printf("[pocketclient] failed to authenticate (was first admin created?) - %v", err.Error())
 	}
 
-	c.PocketBase.Admins = append(c.PocketBase.Admins, auth)
+	Client.PocketBase.Credentials = auth
 
 	return Client
 }
