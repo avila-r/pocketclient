@@ -1,11 +1,14 @@
 package pocketclient
 
-import (
-	. "github.com/avila-r/gopp"
-)
+type AdminCredentials struct {
+	Token    string
+	ID       string
+	Email    string
+	Password string
+}
 
-func (m *ModuleAdmin) auth(email, password string) (*AdminCredentials, error) {
-	url := Client.PocketBase.URL + EndpointAdminAuthWithPassword
+func (m *ModuleAdmin) Auth(email, password string) (*AdminCredentials, error) {
+	url := Client.PocketBase.URL + EndpointAdminsAuthWithPassword
 
 	request := Json{
 		"identity": email,
@@ -45,11 +48,4 @@ func (m *ModuleAdmin) auth(email, password string) (*AdminCredentials, error) {
 	}
 
 	return &credentials, nil
-}
-
-type AdminCredentials struct {
-	Token    string
-	ID       string
-	Email    string
-	Password string
 }
