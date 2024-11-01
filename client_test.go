@@ -7,14 +7,14 @@ import (
 	"github.com/avila-r/pocketclient"
 )
 
-func Test_FirstAdmin(t *testing.T) {
+func Test_Client(t *testing.T) {
 	client := pocketclient.New(pocketclient.Config{
 		URL:      "http://127.0.0.1:8090",
 		Email:    "avila.dev@outlook.com",
 		Password: "1234567890",
 	})
 
-	t.Logf("token - %v", client.PocketBase.FirstAdmin().Token)
+	t.Logf("token - %v", client.PocketBase.Credentials.Token)
 
 	response, err := client.Resty.R().
 		SetHeader(pocketclient.HeaderAuthorizationToken()).
