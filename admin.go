@@ -36,13 +36,8 @@ func (m *ModuleAdmin) ListAll(p ...PaginationParams) (*Pagination[AdminProfile],
 		return nil, err
 	}
 
-	switch res.StatusCode() {
-	case 400:
-		return nil, Error("something went wrong while processing your request. invalid filter")
-	case 401:
-		return nil, Error("the request requires admin authorization token to be set")
-	case 403:
-		return nil, Error("not allowed to perform request")
+	if err := validation.VerifyResponse(res); err != nil {
+		return nil, err
 	}
 
 	admins := Pagination[AdminProfile]{}
