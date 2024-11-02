@@ -1,11 +1,20 @@
 package pocketclient
 
+import "github.com/avila-r/pocketclient/validation"
+
 type AdminProfile struct {
 	ID        string `json:"id"`
 	CreatedAt string `json:"created"`
 	UpdatedAt string `json:"updated"`
 	Email     string `json:"email"`
 	Avatar    int    `json:"avatar"`
+}
+
+type AdminRequest struct {
+	ID       string `json:"id,omitempty"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Avatar   int    `json:"avatar"`
 }
 
 func (m *ModuleAdmin) ListAll(p ...PaginationParams) (*Pagination[AdminProfile], error) {
@@ -44,15 +53,101 @@ func (m *ModuleAdmin) ListAll(p ...PaginationParams) (*Pagination[AdminProfile],
 	return &admins, nil
 }
 
-func (m *ModuleAdmin) GetByID(id string) {
+func (m *ModuleAdmin) GetByID(id string) (*AdminProfile, error) {
+	if !Client.IsAuthenticated() {
+		return nil, ErrNotAuthenticated
+	}
+
+	res, err := Client.Resty.R().
+		SetHeader(HeaderAuthorizationToken()).
+		Get(Client.Resty.BaseURL + EndpointAdmins + "/" + id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if err := validation.VerifyResponse(res); err != nil {
+		return nil, err
+	}
+
+	admin := AdminProfile{}
+	if err := Unmarshal(res.Body(), &admin); err != nil {
+		return nil, err
+	}
+
+	return &admin, nil
 }
 
-func (m *ModuleAdmin) New(email, password string) {
+func (m *ModuleAdmin) New(new AdminRequest) (*AdminProfile, error) {
+	if !Client.IsAuthenticated() {
+		return nil, ErrNotAuthenticated
+	}
+
+	res, err := Client.Resty.R().
+		SetHeader(HeaderAuthorizationToken()).
+		SetBody(new).
+		Post(Client.PocketBase.URL + EndpointAdmins)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if err := validation.VerifyResponse(res); err != nil {
+		return nil, err
+	}
+
+	created := AdminProfile{}
+	if err := Unmarshal(res.Body(), &created); err != nil {
+		return nil, err
+	}
+
+	return &created, nil
 }
 
-func (m *ModuleAdmin) Update(id struct{}) {
+func (m *ModuleAdmin) Update(id string, new AdminRequest) (*AdminProfile, error) {
+	if !Client.IsAuthenticated() {
+		return nil, ErrNotAuthenticated
+	}
+
+	new.ID = ""
+
+	res, err := Client.Resty.R().
+		SetHeader(HeaderAuthorizationToken()).
+		SetBody(new).
+		Patch(Client.PocketBase.URL + EndpointAdmins + "/" + id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if err := validation.VerifyResponse(res); err != nil {
+		return nil, err
+	}
+
+	updated := AdminProfile{}
+	if err := Unmarshal(res.Body(), &updated); err != nil {
+		return nil, err
+	}
+
+	return &updated, nil
 }
 
-func (m *ModuleAdmin) DeleteByID(id struct{}) {
+func (m *ModuleAdmin) DeleteByID(id string) error {
+	if !Client.IsAuthenticated() {
+		return ErrNotAuthenticated
+	}
 
+	res, err := Client.Resty.R().
+		SetHeader(HeaderAuthorizationToken()).
+		Delete(Client.PocketBase.URL + EndpointAdmins + "/" + id)
+
+	if err != nil {
+		return err
+	}
+
+	if err := validation.VerifyResponse(res); err != nil {
+		return err
+	}
+
+	return nil
 }
