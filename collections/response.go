@@ -31,12 +31,12 @@ type CollectionResponse struct {
 }
 
 type CollectionResponseField struct {
-	System   bool   `json:"system"`
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Type     string `json:"type"`
-	Required bool   `json:"required"`
-	Unique   bool   `json:"unique"`
+	System   bool      `json:"system"`
+	ID       string    `json:"id"`
+	Name     string    `json:"name"`
+	Type     FieldType `json:"type"`
+	Required bool      `json:"required"`
+	Unique   bool      `json:"unique"`
 	Options  struct {
 		Min       *int     `json:"min,omitempty"`
 		Max       *int     `json:"max,omitempty"`

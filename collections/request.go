@@ -18,7 +18,7 @@ type CollectionRequest struct {
 	//
 	// Specifies the collection type.
 	// Can be "base", "auth", or "view".
-	Type Type `json:"type"`
+	Type CollectionType `json:"type"`
 
 	// Schema fields list.
 	//
@@ -31,11 +31,11 @@ type CollectionRequest struct {
 	// indicating it cannot be renamed or deleted.
 	System *bool `json:"system,omitempty"`
 
-	ListRule   *string `json:"listRule,omitempty"`   // Optional API rule for list action. Defines restrictions or filters.
-	ViewRule   *string `json:"viewRule,omitempty"`   // Optional API rule for view action. Specifies view restrictions.
-	CreateRule *string `json:"createRule,omitempty"` // Optional API rule for create action. For "view" collections, this rule must be null.
-	UpdateRule *string `json:"updateRule,omitempty"` // Optional API rule for update action. For "view" collections, this rule must be null.
-	DeleteRule *string `json:"deleteRule,omitempty"` // Optional API rule for delete action. For "view" collections, this rule must be null.
+	ListRule   *Rule `json:"listRule,omitempty"`   // Optional API rule for list action. Defines restrictions or filters.
+	ViewRule   *Rule `json:"viewRule,omitempty"`   // Optional API rule for view action. Specifies view restrictions.
+	CreateRule *Rule `json:"createRule,omitempty"` // Optional API rule for create action. For "view" collections, this rule must be null.
+	UpdateRule *Rule `json:"updateRule,omitempty"` // Optional API rule for update action. For "view" collections, this rule must be null.
+	DeleteRule *Rule `json:"deleteRule,omitempty"` // Optional API rule for delete action. For "view" collections, this rule must be null.
 
 	// Optional.
 	//
@@ -50,7 +50,7 @@ type CollectionRequest struct {
 type CollectionRequestField struct {
 	ID       string                        `json:"id"`       // Required unique identifier for the field within the collection.
 	Name     string                        `json:"name"`     // Required name of the field.
-	Type     string                        `json:"type"`     // Required type of the field, e.g., string, number, etc.
+	Type     FieldType                     `json:"type"`     // Required type of the field, e.g., string, number, etc.
 	Required bool                          `json:"required"` // Specifies if the field is mandatory.
 	Unique   bool                          `json:"unique"`   // Specifies if the field should contain unique values.
 	Options  CollectionRequestFieldOptions `json:"options"`  // Options for the field, including constraints and validation.
@@ -60,7 +60,7 @@ type CollectionRequestField struct {
 type CollectionRequestFieldOptions struct {
 	Min       *int     `json:"min,omitempty"`       // Optional minimum value constraint for numeric fields.
 	Max       *int     `json:"max,omitempty"`       // Optional maximum value constraint for numeric fields.
-	Pattern   string   `json:"pattern"`             // Pattern that the field value should match (e.g., regex for strings).
+	Pattern   *string  `json:"pattern"`             // Pattern that the field value should match (e.g., regex for strings).
 	MaxSelect *int     `json:"maxSelect,omitempty"` // Optional maximum number of selections allowed for multiselect fields.
 	MaxSize   *int     `json:"maxSize,omitempty"`   // Optional maximum size constraint for the field, typically for files.
 	MimeTypes []string `json:"mimeTypes,omitempty"` // Optional list of allowed MIME types for file fields.
