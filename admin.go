@@ -60,7 +60,7 @@ func (m *ModuleAdmin) GetByID(id string) (*AdminProfile, error) {
 	return &admin, nil
 }
 
-func (m *ModuleAdmin) New(new AdminRequest) (*AdminProfile, error) {
+func (m *ModuleAdmin) Create(new AdminRequest) (*AdminProfile, error) {
 	res, err := RequestPostAdmin(new)
 
 	if err != nil {
