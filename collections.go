@@ -5,7 +5,11 @@ import (
 	"github.com/avila-r/pocketclient/validation"
 )
 
-func (m *ModuleCollections) New(new *collections.CollectionRequest) (*collections.CollectionResponse, error) {
+func (m *ModuleCollections) New(name string) *collections.CollectionBuilder {
+	return collections.New(name)
+}
+
+func (m *ModuleCollections) Create(new *collections.CollectionRequest) (*collections.CollectionResponse, error) {
 	res, err := RequestPostCollection(new)
 
 	if err != nil {
