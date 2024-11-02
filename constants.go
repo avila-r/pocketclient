@@ -6,10 +6,18 @@ const (
 	EndpointAdminsRequestPasswordReset = EndpointAdmins + "/request-password-reset"
 	EndpointAdminsConfirmPasswordReset = EndpointAdmins + "/confirm-password-reset"
 
+	EndpointCollections = "/api/collections"
+
 	EndpointHealthCheck = "/api/health"
 
 	EndpointLogs      = "/api/logs"
 	EndpointLogsStats = EndpointLogs + "/stats"
+)
+
+var (
+	EndpointCollection = func(collection string) string {
+		return EndpointCollections + "/" + collection + "/records"
+	}
 )
 
 var (
