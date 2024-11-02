@@ -1,5 +1,7 @@
 package pocketclient
 
+import "github.com/avila-r/pocketclient/validation"
+
 type Log struct {
 	ID string `json:"id"`
 
@@ -42,13 +44,8 @@ func (c *PocketClient) GetLogs(p ...PaginationParams) (*Pagination[Log], error) 
 		return nil, err
 	}
 
-	switch res.StatusCode() {
-	case 400:
-		return nil, Error("something went wrong while processing your request. invalid filter")
-	case 401:
-		return nil, Error("the request requires admin authorization token to be set")
-	case 403:
-		return nil, Error("not allowed to perform request")
+	if err := validation.VerifyResponse(res); err != nil {
+		return nil, err
 	}
 
 	logs := Pagination[Log]{}
@@ -72,13 +69,8 @@ func (c *PocketClient) GetLogByID(id string) (*Log, error) {
 		return nil, err
 	}
 
-	switch res.StatusCode() {
-	case 401:
-		return nil, Error("the request requires admin authorization token to be set")
-	case 403:
-		return nil, Error("not allowed to perform request")
-	case 404:
-		return nil, Error("log not found with provided id (" + id + ")")
+	if err := validation.VerifyResponse(res); err != nil {
+		return nil, err
 	}
 
 	log := Log{}
@@ -107,13 +99,8 @@ func (c *PocketClient) GetLogggingStats() (*[]LogStat, error) {
 		return nil, err
 	}
 
-	switch res.StatusCode() {
-	case 400:
-		return nil, Error("something went wrong while processing your request. invalid filter")
-	case 401:
-		return nil, Error("the request requires admin authorization token to be set")
-	case 403:
-		return nil, Error("not allowed to perform request")
+	if err := validation.VerifyResponse(res); err != nil {
+		return nil, err
 	}
 
 	stats := []LogStat{}
