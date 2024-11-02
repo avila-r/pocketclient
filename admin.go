@@ -23,14 +23,7 @@ func (m *ModuleAdmin) ListAll(p ...PaginationParams) (*Pagination[AdminProfile],
 		params = p[0]
 	}
 
-	if !Client.IsAuthenticated() {
-		return nil, ErrNotAuthenticated
-	}
-
-	res, err := Client.Resty.R().
-		SetQueryParams(params.ToQueryParams()).
-		SetHeader(HeaderAuthorizationToken()).
-		Get(Client.PocketBase.URL + EndpointAdmins)
+	res, err := RequestListAdmins(params)
 
 	if err != nil {
 		return nil, err
@@ -49,13 +42,7 @@ func (m *ModuleAdmin) ListAll(p ...PaginationParams) (*Pagination[AdminProfile],
 }
 
 func (m *ModuleAdmin) GetByID(id string) (*AdminProfile, error) {
-	if !Client.IsAuthenticated() {
-		return nil, ErrNotAuthenticated
-	}
-
-	res, err := Client.Resty.R().
-		SetHeader(HeaderAuthorizationToken()).
-		Get(Client.Resty.BaseURL + EndpointAdmins + "/" + id)
+	res, err := RequestGetAdmin(id)
 
 	if err != nil {
 		return nil, err
@@ -74,14 +61,7 @@ func (m *ModuleAdmin) GetByID(id string) (*AdminProfile, error) {
 }
 
 func (m *ModuleAdmin) New(new AdminRequest) (*AdminProfile, error) {
-	if !Client.IsAuthenticated() {
-		return nil, ErrNotAuthenticated
-	}
-
-	res, err := Client.Resty.R().
-		SetHeader(HeaderAuthorizationToken()).
-		SetBody(new).
-		Post(Client.PocketBase.URL + EndpointAdmins)
+	res, err := RequestPostAdmin(new)
 
 	if err != nil {
 		return nil, err
@@ -99,17 +79,8 @@ func (m *ModuleAdmin) New(new AdminRequest) (*AdminProfile, error) {
 	return &created, nil
 }
 
-func (m *ModuleAdmin) Update(id string, new AdminRequest) (*AdminProfile, error) {
-	if !Client.IsAuthenticated() {
-		return nil, ErrNotAuthenticated
-	}
-
-	new.ID = ""
-
-	res, err := Client.Resty.R().
-		SetHeader(HeaderAuthorizationToken()).
-		SetBody(new).
-		Patch(Client.PocketBase.URL + EndpointAdmins + "/" + id)
+func (m *ModuleAdmin) Update(id string, patch AdminRequest) (*AdminProfile, error) {
+	res, err := RequestUpdateAdmin(id, patch)
 
 	if err != nil {
 		return nil, err
@@ -128,13 +99,7 @@ func (m *ModuleAdmin) Update(id string, new AdminRequest) (*AdminProfile, error)
 }
 
 func (m *ModuleAdmin) DeleteByID(id string) error {
-	if !Client.IsAuthenticated() {
-		return ErrNotAuthenticated
-	}
-
-	res, err := Client.Resty.R().
-		SetHeader(HeaderAuthorizationToken()).
-		Delete(Client.PocketBase.URL + EndpointAdmins + "/" + id)
+	res, err := RequestDeleteAdmin(id)
 
 	if err != nil {
 		return err
