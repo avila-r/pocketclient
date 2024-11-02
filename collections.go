@@ -5,15 +5,12 @@ import (
 	"github.com/avila-r/pocketclient/validation"
 )
 
-func (m *ModuleCollections) New(new collections.CollectionRequest) (*collections.CollectionResponse, error) {
+func (m *ModuleCollections) New(new *collections.CollectionRequest) (*collections.CollectionResponse, error) {
 	if !Client.IsAuthenticated() {
 		return nil, ErrNotAuthenticated
 	}
 
-	res, err := Client.Resty.R().
-		SetHeader(HeaderAuthorizationToken()).
-		SetBody(new).
-		Post(Client.PocketBase.URL + EndpointCollections)
+	res, err := RequestPostCollection(new)
 
 	if err != nil {
 		return nil, err
@@ -41,9 +38,7 @@ func (m *ModuleCollections) ListAll(p ...PaginationParams) (*Pagination[collecti
 		return nil, ErrNotAuthenticated
 	}
 
-	res, err := Client.Resty.R().
-		SetQueryParams(pagination.ToQueryParams()).
-		Get(Client.PocketBase.URL + EndpointCollections)
+	res, err := RequestListCollections(pagination)
 
 	if err != nil {
 		return nil, err
@@ -66,9 +61,7 @@ func (m *ModuleCollections) GetByID(id string) (*collections.CollectionResponse,
 		return nil, ErrNotAuthenticated
 	}
 
-	res, err := Client.Resty.R().
-		SetHeader(HeaderAuthorizationToken()).
-		Get(Client.Resty.BaseURL + EndpointCollections + "/" + id)
+	res, err := RequestGetCollection(id)
 
 	if err != nil {
 		return nil, err
@@ -86,15 +79,12 @@ func (m *ModuleCollections) GetByID(id string) (*collections.CollectionResponse,
 	return &collection, nil
 }
 
-func (m *ModuleCollections) Update(id string, new collections.CollectionPatch) (*collections.CollectionResponse, error) {
+func (m *ModuleCollections) Update(id string, new *collections.CollectionPatch) (*collections.CollectionResponse, error) {
 	if !Client.IsAuthenticated() {
 		return nil, ErrNotAuthenticated
 	}
 
-	res, err := Client.Resty.R().
-		SetHeader(HeaderAuthorizationToken()).
-		SetBody(new).
-		Patch(Client.PocketBase.URL + EndpointCollections + "/" + id)
+	res, err := RequestUpdateCollection(id, new)
 
 	if err != nil {
 		return nil, err
@@ -117,9 +107,7 @@ func (m *ModuleCollections) DeleteByID(id string) error {
 		return ErrNotAuthenticated
 	}
 
-	res, err := Client.Resty.R().
-		SetHeader(HeaderAuthorizationToken()).
-		Delete(Client.PocketBase.URL + EndpointCollections + "/" + id)
+	res, err := RequestDeleteCollection(id)
 
 	if err != nil {
 		return err
