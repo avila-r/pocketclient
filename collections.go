@@ -6,10 +6,6 @@ import (
 )
 
 func (m *ModuleCollections) New(new *collections.CollectionRequest) (*collections.CollectionResponse, error) {
-	if !Client.IsAuthenticated() {
-		return nil, ErrNotAuthenticated
-	}
-
 	res, err := RequestPostCollection(new)
 
 	if err != nil {
@@ -34,10 +30,6 @@ func (m *ModuleCollections) ListAll(p ...PaginationParams) (*Pagination[collecti
 		pagination = p[0]
 	}
 
-	if !Client.IsAuthenticated() {
-		return nil, ErrNotAuthenticated
-	}
-
 	res, err := RequestListCollections(pagination)
 
 	if err != nil {
@@ -57,10 +49,6 @@ func (m *ModuleCollections) ListAll(p ...PaginationParams) (*Pagination[collecti
 }
 
 func (m *ModuleCollections) GetByID(id string) (*collections.CollectionResponse, error) {
-	if !Client.IsAuthenticated() {
-		return nil, ErrNotAuthenticated
-	}
-
 	res, err := RequestGetCollection(id)
 
 	if err != nil {
@@ -80,10 +68,6 @@ func (m *ModuleCollections) GetByID(id string) (*collections.CollectionResponse,
 }
 
 func (m *ModuleCollections) Update(id string, new *collections.CollectionPatch) (*collections.CollectionResponse, error) {
-	if !Client.IsAuthenticated() {
-		return nil, ErrNotAuthenticated
-	}
-
 	res, err := RequestUpdateCollection(id, new)
 
 	if err != nil {
@@ -103,10 +87,6 @@ func (m *ModuleCollections) Update(id string, new *collections.CollectionPatch) 
 }
 
 func (m *ModuleCollections) DeleteByID(id string) error {
-	if !Client.IsAuthenticated() {
-		return ErrNotAuthenticated
-	}
-
 	res, err := RequestDeleteCollection(id)
 
 	if err != nil {

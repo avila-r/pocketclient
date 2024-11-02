@@ -93,6 +93,10 @@ var (
 			c = client[0]
 		}
 
+		if !c.IsAuthenticated() {
+			return nil, ErrNotAuthenticated
+		}
+
 		return c.Resty.R().
 			SetHeader(HeaderAuthorizationTokenFrom(c)).
 			SetBody(request).
@@ -103,6 +107,10 @@ var (
 		c := Client
 		if len(client) > 0 {
 			c = client[0]
+		}
+
+		if !c.IsAuthenticated() {
+			return nil, ErrNotAuthenticated
 		}
 
 		return c.Resty.R().
@@ -116,6 +124,10 @@ var (
 			c = client[0]
 		}
 
+		if !c.IsAuthenticated() {
+			return nil, ErrNotAuthenticated
+		}
+
 		return c.Resty.R().
 			SetHeader(HeaderAuthorizationTokenFrom(c)).
 			Get(Client.Resty.BaseURL + EndpointCollections + "/" + id)
@@ -125,6 +137,10 @@ var (
 		c := Client
 		if len(client) > 0 {
 			c = client[0]
+		}
+
+		if !c.IsAuthenticated() {
+			return nil, ErrNotAuthenticated
 		}
 
 		return c.Resty.R().
@@ -137,6 +153,10 @@ var (
 		c := Client
 		if len(client) > 0 {
 			c = client[0]
+		}
+
+		if !c.IsAuthenticated() {
+			return nil, ErrNotAuthenticated
 		}
 
 		return c.Resty.R().
