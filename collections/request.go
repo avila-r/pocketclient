@@ -48,7 +48,7 @@ type CollectionRequest struct {
 
 // CollectionRequestField represents an individual field within a collection schema.
 type CollectionRequestField struct {
-	ID       string                        `json:"id"`       // Required unique identifier for the field within the collection.
+	ID       string                        `json:"id"`       // Unique identifier for the field within the collection.
 	Name     string                        `json:"name"`     // Required name of the field.
 	Type     FieldType                     `json:"type"`     // Required type of the field, e.g., string, number, etc.
 	Required bool                          `json:"required"` // Specifies if the field is mandatory.
