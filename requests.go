@@ -18,7 +18,7 @@ var (
 		}
 
 		return c.Resty.R().
-			SetHeader(HeaderAuthorizationToken()).
+			SetHeader(HeaderAuthorizationTokenFrom(c)).
 			SetBody(request).
 			Post(Client.PocketBase.URL + EndpointAdmins)
 	}
@@ -50,7 +50,7 @@ var (
 		}
 
 		return c.Resty.R().
-			SetHeader(HeaderAuthorizationToken()).
+			SetHeader(HeaderAuthorizationTokenFrom(c)).
 			Get(Client.Resty.BaseURL + EndpointAdmins + "/" + id)
 	}
 
@@ -65,7 +65,7 @@ var (
 		}
 
 		return c.Resty.R().
-			SetHeader(HeaderAuthorizationToken()).
+			SetHeader(HeaderAuthorizationTokenFrom(c)).
 			SetBody(patch).
 			Patch(Client.PocketBase.URL + EndpointAdmins + "/" + id)
 	}
@@ -81,7 +81,7 @@ var (
 		}
 
 		return c.Resty.R().
-			SetHeader(HeaderAuthorizationToken()).
+			SetHeader(HeaderAuthorizationTokenFrom(c)).
 			Delete(Client.PocketBase.URL + EndpointAdmins + "/" + id)
 	}
 )
@@ -107,10 +107,6 @@ var (
 		c := Client
 		if len(client) > 0 {
 			c = client[0]
-		}
-
-		if !c.IsAuthenticated() {
-			return nil, ErrNotAuthenticated
 		}
 
 		return c.Resty.R().
@@ -160,7 +156,55 @@ var (
 		}
 
 		return c.Resty.R().
-			SetHeader(HeaderAuthorizationToken()).
+			SetHeader(HeaderAuthorizationTokenFrom(c)).
 			Delete(Client.PocketBase.URL + EndpointCollections + "/" + id)
+	}
+)
+
+var (
+	RequestListLogs = func(pagination PaginationParams, client ...*PocketClient) (*resty.Response, error) {
+		c := Client
+		if len(client) > 0 {
+			c = client[0]
+		}
+
+		if !c.IsAuthenticated() {
+			return nil, ErrNotAuthenticated
+		}
+
+		return c.Resty.R().
+			SetQueryParams(pagination.ToQueryParams()).
+			SetHeader(HeaderAuthorizationTokenFrom(c)).
+			Get(c.PocketBase.URL + EndpointLogs)
+	}
+
+	RequestGetLog = func(id string, client ...*PocketClient) (*resty.Response, error) {
+		c := Client
+		if len(client) > 0 {
+			c = client[0]
+		}
+
+		if !c.IsAuthenticated() {
+			return nil, ErrNotAuthenticated
+		}
+
+		return c.Resty.R().
+			SetHeader(HeaderAuthorizationTokenFrom(c)).
+			Get(c.PocketBase.URL + EndpointLogs + "/" + id)
+	}
+
+	RequestGetLoggingStats = func(client ...*PocketClient) (*resty.Response, error) {
+		c := Client
+		if len(client) > 0 {
+			c = client[0]
+		}
+
+		if !c.IsAuthenticated() {
+			return nil, ErrNotAuthenticated
+		}
+
+		return c.Resty.R().
+			SetHeader(HeaderAuthorizationTokenFrom(c)).
+			Get(c.PocketBase.URL + EndpointLogsStats)
 	}
 )
