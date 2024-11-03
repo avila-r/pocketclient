@@ -3,11 +3,11 @@ package collections
 type CollectionType string
 
 type Field struct {
-	N string
-	T FieldType
-	R bool
-	U bool
-	O FieldOptions
+	Name     string
+	Type     FieldType
+	Required bool
+	Unique   bool
+	Options  FieldOptions
 }
 
 type FieldType string
