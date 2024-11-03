@@ -110,6 +110,7 @@ var (
 		}
 
 		return c.Resty.R().
+			SetHeader(HeaderAuthorizationTokenFrom(c)).
 			SetQueryParams(pagination.ToQueryParams()).
 			Get(Client.PocketBase.URL + EndpointCollections)
 	}
@@ -126,7 +127,7 @@ var (
 
 		return c.Resty.R().
 			SetHeader(HeaderAuthorizationTokenFrom(c)).
-			Get(Client.Resty.BaseURL + EndpointCollections + "/" + id)
+			Get(Client.PocketBase.URL + EndpointCollections + "/" + id)
 	}
 
 	RequestUpdateCollection = func(id string, new *collections.CollectionPatch, client ...*PocketClient) (*resty.Response, error) {
