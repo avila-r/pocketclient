@@ -31,14 +31,7 @@ func (c *PocketClient) GetLogs(p ...PaginationParams) (*Pagination[Log], error) 
 		params = p[0]
 	}
 
-	if !c.IsAuthenticated() {
-		return nil, ErrNotAuthenticated
-	}
-
-	res, err := c.Resty.R().
-		SetQueryParams(params.ToQueryParams()).
-		SetHeader(HeaderAuthorizationTokenFrom(c)).
-		Get(c.PocketBase.URL + EndpointLogs)
+	res, err := RequestListLogs(params, c)
 
 	if err != nil {
 		return nil, err
@@ -57,13 +50,7 @@ func (c *PocketClient) GetLogs(p ...PaginationParams) (*Pagination[Log], error) 
 }
 
 func (c *PocketClient) GetLogByID(id string) (*Log, error) {
-	if !c.IsAuthenticated() {
-		return nil, ErrNotAuthenticated
-	}
-
-	res, err := c.Resty.R().
-		SetHeader(HeaderAuthorizationTokenFrom(c)).
-		Get(c.PocketBase.URL + EndpointLogs + "/" + id)
+	res, err := RequestGetLog(id, c)
 
 	if err != nil {
 		return nil, err
@@ -87,13 +74,7 @@ type LogStat struct {
 }
 
 func (c *PocketClient) GetLogggingStats() (*[]LogStat, error) {
-	if !c.IsAuthenticated() {
-		return nil, ErrNotAuthenticated
-	}
-
-	res, err := c.Resty.R().
-		SetHeader(HeaderAuthorizationTokenFrom(c)).
-		Get(c.PocketBase.URL + EndpointLogsStats)
+	res, err := RequestGetLoggingStats(c)
 
 	if err != nil {
 		return nil, err
