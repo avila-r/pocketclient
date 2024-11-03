@@ -23,8 +23,13 @@ var (
 		},
 	}
 
-	create = func(t *testing.T) *collections.CollectionResponse {
-		id := request.Name
+	create = func(t *testing.T, req ...collections.CollectionRequest) *collections.CollectionResponse {
+		r := request
+		if len(req) > 0 {
+			r = req[0]
+		}
+
+		id := r.Name
 
 		t.Cleanup(func() {
 			delete(id)
@@ -34,7 +39,7 @@ var (
 			return find(t, id)
 		}
 
-		res, err := pocketclient.Collections.Create(&request)
+		res, err := pocketclient.Collections.Create(&r)
 
 		if err != nil {
 			t.Errorf("failed to create collection - %v", err.Error())
@@ -94,4 +99,25 @@ func Test_List(t *testing.T) {
 
 func Test_GetByID(t *testing.T) {
 	find(t, create(t).ID)
+}
+
+func Test_Builder(t *testing.T) {
+	r, err := collections.New(request.Name).
+		Schema(collections.Schema{
+			{
+				Name: "name",
+				Type: collections.Text,
+			},
+			{
+				Name: "surname",
+				Type: collections.Text,
+			},
+		}).
+		Build()
+
+	if err != nil {
+		t.Errorf("failed to build request - %v", err.Error())
+	}
+
+	_ = create(t, *r)
 }
