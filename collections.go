@@ -10,6 +10,10 @@ func (m *ModuleCollections) New(name string) *collections.CollectionBuilder {
 }
 
 func (m *ModuleCollections) Create(new *collections.CollectionRequest) (*collections.CollectionResponse, error) {
+	if err := m.Validate(new); err != nil {
+		return nil, err
+	}
+
 	res, err := RequestPostCollection(new)
 
 	if err != nil {
@@ -101,5 +105,10 @@ func (m *ModuleCollections) DeleteByID(id string) error {
 		return err
 	}
 
+	return nil
+}
+
+// TODO: Validate request to prevent errors
+func (m *ModuleCollections) Validate(r *collections.CollectionRequest) error {
 	return nil
 }
