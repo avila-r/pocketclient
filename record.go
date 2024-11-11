@@ -3,14 +3,7 @@ package pocketclient
 import "github.com/avila-r/pocketclient/validation"
 
 func Insert(collection string, data any) error {
-	if !Client.IsAuthenticated() {
-		return ErrNotAuthenticated
-	}
-
-	res, err := Client.Resty.R().
-		SetHeader(HeaderAuthorizationToken()).
-		SetBody(data).
-		Post(Client.PocketBase.URL + EndpointCollection(collection))
+	res, err := RequestPostRecord(collection, data)
 
 	if err != nil {
 		return err
@@ -48,13 +41,7 @@ func FindIn[T any](collection string, id string) (*T, error) {
 }
 
 func Fetch(q Query, to any) error {
-	if !Client.IsAuthenticated() {
-		return ErrNotAuthenticated
-	}
-
-	res, err := Client.Resty.R().
-		SetHeader(HeaderAuthorizationToken()).
-		Get(Client.Resty.BaseURL + EndpointCollection(q.Collection) + "/" + q.ID)
+	res, err := RequestGetRecord(q.Collection, q.ID)
 
 	if err != nil {
 		return err

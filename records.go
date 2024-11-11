@@ -15,14 +15,7 @@ func Collection[T any](id string) *RecordModule[T] {
 }
 
 func (m *RecordModule[T]) Insert(new T) (*T, error) {
-	if !Client.IsAuthenticated() {
-		return nil, ErrNotAuthenticated
-	}
-
-	res, err := Client.Resty.R().
-		SetHeader(HeaderAuthorizationToken()).
-		SetBody(new).
-		Post(Client.PocketBase.URL + EndpointCollection(m.CollectionID))
+	res, err := RequestPostRecord(m.CollectionID, new)
 
 	if err != nil {
 		return nil, err
@@ -46,13 +39,7 @@ func (m *RecordModule[T]) List(p ...PaginationParams) (*Pagination[T], error) {
 		pagination = p[0]
 	}
 
-	if !Client.IsAuthenticated() {
-		return nil, ErrNotAuthenticated
-	}
-
-	res, err := Client.Resty.R().
-		SetQueryParams(pagination.ToQueryParams()).
-		Get(Client.PocketBase.URL + EndpointCollection(m.CollectionID))
+	res, err := RequestListRecords(m.CollectionID, pagination)
 
 	if err != nil {
 		return nil, err
@@ -71,13 +58,7 @@ func (m *RecordModule[T]) List(p ...PaginationParams) (*Pagination[T], error) {
 }
 
 func (m *RecordModule[T]) Find(id string) (*T, error) {
-	if !Client.IsAuthenticated() {
-		return nil, ErrNotAuthenticated
-	}
-
-	res, err := Client.Resty.R().
-		SetHeader(HeaderAuthorizationToken()).
-		Get(Client.Resty.BaseURL + EndpointCollection(m.CollectionID) + "/" + id)
+	res, err := RequestGetRecord(m.CollectionID, id)
 
 	if err != nil {
 		return nil, err
@@ -96,14 +77,7 @@ func (m *RecordModule[T]) Find(id string) (*T, error) {
 }
 
 func (m *RecordModule[T]) Update(id string, target *T) error {
-	if !Client.IsAuthenticated() {
-		return ErrNotAuthenticated
-	}
-
-	res, err := Client.Resty.R().
-		SetHeader(HeaderAuthorizationToken()).
-		SetBody(*target).
-		Patch(Client.PocketBase.URL + EndpointCollection(m.CollectionID) + "/" + id)
+	res, err := RequestUpdateRecord(m.CollectionID, id, target)
 
 	if err != nil {
 		return err
@@ -121,13 +95,7 @@ func (m *RecordModule[T]) Update(id string, target *T) error {
 }
 
 func (m *RecordModule[T]) Delete(id string) error {
-	if !Client.IsAuthenticated() {
-		return ErrNotAuthenticated
-	}
-
-	res, err := Client.Resty.R().
-		SetHeader(HeaderAuthorizationToken()).
-		Delete(Client.PocketBase.URL + EndpointCollection(m.CollectionID) + "/" + id)
+	res, err := RequestDeleteRecord(m.CollectionID, id)
 
 	if err != nil {
 		return err
