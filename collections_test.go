@@ -79,11 +79,11 @@ var (
 	}
 )
 
-func Test_Create(t *testing.T) {
+func Test_CreateCollection(t *testing.T) {
 	_ = test_create_collection(t)
 }
 
-func Test_Delete(t *testing.T) {
+func Test_DeleteCollection(t *testing.T) {
 	res := test_create_collection(t)
 
 	if err := test_delete_collection(res.ID); err != nil {
@@ -91,17 +91,17 @@ func Test_Delete(t *testing.T) {
 	}
 }
 
-func Test_List(t *testing.T) {
+func Test_ListCollections(t *testing.T) {
 	_ = test_create_collection(t)
 
 	test_list_collection(t)
 }
 
-func Test_GetByID(t *testing.T) {
+func Test_GetCollectionByID(t *testing.T) {
 	test_find_collection(t, test_create_collection(t).ID)
 }
 
-func Test_Builder(t *testing.T) {
+func Test_CollectionRequestBuilder(t *testing.T) {
 	r, err := collections.New(collection_request.Name).
 		Schema(collections.Schema{
 			{
