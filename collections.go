@@ -1,6 +1,8 @@
 package pocketclient
 
 import (
+	"regexp"
+
 	"github.com/avila-r/pocketclient/collections"
 	"github.com/avila-r/pocketclient/validation"
 )
@@ -108,7 +110,36 @@ func (m *ModuleCollections) DeleteByID(id string) error {
 	return nil
 }
 
-// TODO: Validate request to prevent errors
 func (m *ModuleCollections) Validate(r *collections.CollectionRequest) error {
+	if r.Name == "" {
+		return Error("missing required value (name)")
+	}
+
+	if !isCamelCase(r.Name) {
+		return Error("collection's name must be in camel case pattern")
+	}
+
+	if string(r.Type) == "" {
+		return Error("missing required value (type)")
+	}
+
+	if r.Type == collections.TypeBase && r.Schema == nil {
+		return Error("schema is required for base collections")
+	}
+
+	if r.Type == collections.TypeView && r.Options.ViewOptions == nil {
+		return Error("query is required for view collections")
+	}
+
+	if r.Type == collections.TypeView && r.Options.ViewOptions.Query == "" {
+		return Error("query is required for view collections")
+	}
+
 	return nil
+}
+
+func isCamelCase(s string) bool {
+	r, _ := regexp.Compile(`^[a-z]+(?:[A-Z][a-z]*)*$`)
+
+	return r.MatchString(s)
 }
