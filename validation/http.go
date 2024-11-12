@@ -1,22 +1,37 @@
 package validation
 
 import (
-	"errors"
+	"encoding/json"
 
 	"github.com/go-resty/resty/v2"
 )
 
 var (
-	ErrBadRequest    = errors.New("something went wrong while processing your request")
-	ErrNotAuthorized = errors.New("the request requires valid authorization token")
-	ErrNotAllowed    = errors.New("not allowed to perform request")
-	ErrNotFound      = errors.New("requested resource not found")
+	ErrBadRequest = Failure{
+		Code:    400,
+		Message: "something went wrong while processing your request",
+	}
+
+	ErrNotAuthorized = Failure{
+		Code:    401,
+		Message: "the request requires valid authorization token",
+	}
+
+	ErrNotAllowed = Failure{
+		Code:    403,
+		Message: "not allowed to perform request",
+	}
+
+	ErrNotFound = Failure{
+		Code:    404,
+		Message: "requested resource not found",
+	}
 )
 
 func VerifyResponse(r *resty.Response) error {
 	switch r.StatusCode() {
 	case 400:
-		return ErrBadRequest
+		return CatchError(r)
 	case 401:
 		return ErrNotAuthorized
 	case 403:
@@ -26,4 +41,12 @@ func VerifyResponse(r *resty.Response) error {
 	default:
 		return nil
 	}
+}
+
+func CatchError(r *resty.Response) (f error) {
+	if err := json.Unmarshal(r.Body(), &f); err != nil {
+		return ErrBadRequest
+	}
+
+	return
 }
